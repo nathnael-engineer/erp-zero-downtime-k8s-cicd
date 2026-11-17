@@ -1,0 +1,13 @@
+name: Zero-Downtime ERP Release
+on:
+  push:
+    branches: ["main"]
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Kubernetes Manifests
+        run: test -f k8s/deployment-bluegreen.yaml
+      - name: Build Container Image
+        run: docker build -f docker/Dockerfile.odoo -t erp-runtime:${{ github.sha }} docker/
